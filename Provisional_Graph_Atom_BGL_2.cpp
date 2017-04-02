@@ -61,7 +61,6 @@ int main()
         atoms_vec.push_back (*atoms);
     }
     Molecule obj_molecule(5, 5, 5, atoms_vec);
-    obj_molecule.print ();
     molecule_graph m;
     molecule_graph::vertex_descriptor v[3];
     for(int i = 0;i < 3;i++)
