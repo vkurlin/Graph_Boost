@@ -50,7 +50,7 @@ const double length_NH = 1.00577;
 const double length_HO = 2.62; //1.97436;
 const double length_ON = 3.07;
 //const double angle_NHO = 100; // degrees
-//const double distance_ON = 2.82822; // min distance between N/O atoms in adjacent molecules
+//const double distance_ON = 2.82822; // min distance between N/O atoms in adjacent molecules 
 const double big_constant = 1e+8;
 
 Point3d V (Vector v) { return Point3d( v(0), v(1), v(2) ); }
@@ -200,12 +200,12 @@ public:
             Point2d carbon_axis_xy( carbon_axis.x, carbon_axis.y );
             carbon_angle_hor = Angle_Signed( Point2d(1,0), carbon_axis_xy );
         }
-        // Find oxygen_rays
+        // Find oxygen_rays; 
         for ( int i = 0; i < atoms['O'].size(); i++ ) oxygen_rays.push_back( atoms['O'][i].point_a - centre );
         Matrix rotation = Eigen::MatrixXd::Identity(3,3);
         double c = cos( carbon_angle_ver * M_PI / 180 );
         rotation *= c;
-        // Find the rotation matrix to make the carbon axis vertical
+        // Find the rotation matrix to make the carbon axis vertical 
         if ( carbon_angle_ver > 0 )
         {
             cv::Point3d a( 0, 0, 0 ); // rotation_axis
@@ -263,7 +263,7 @@ Point3d Cross_Product (Point3d v0, Point3d v1)
     return v;
 }
 
-bool Find_Rotation (Point3d v0, Point3d v1, Matrix& rotation)
+bool Find_Rotation (Point3d v0, Point3d v1, Matrix& rotation)  //What is the purpose of calculation of rotation matrix w.r.t verties 
 {
     double angle = Angle_Positive( v0, v1 );
     rotation = Eigen::MatrixXd::Identity(3,3);
@@ -271,7 +271,7 @@ bool Find_Rotation (Point3d v0, Point3d v1, Matrix& rotation)
     double c = cos( angle * M_PI / 180 );
     double s = sin( angle * M_PI / 180 );
     rotation *= c;
-    if ( angle == M_PI ) return true;
+    if ( angle == M_PI ) return true; 
     Point3d axis = Cross_Product( v0, v1 );
     axis *= 1.0 / norm( axis );
     rotation += s * Cross_Product( axis ) + (1-c) * Tensor_Product( axis ); //std::cout<<"\nr="<<rotation;
@@ -463,7 +463,7 @@ bool Linked_ON (Molecule& m0, Molecule& m1, double distance_ON)
     return linked;
 }*/
 
-bool Linked_NHO (Molecule& m0, Molecule& m1, double& gap_HO)
+bool Linked_NHO (Molecule& m0, Molecule& m1, double& gap_HO)  // I could not understand the operations within this function.
 {
     gap_HO = big_constant;
     bool linked = false;
@@ -500,7 +500,7 @@ void Order_Neighbours (Graph& s, Vertex_it v, std::vector<Vertex_Point>& c)
     std::cout<<"\nSorted:"; for ( auto n : c ) std::cout<<" "<<n.point;
 }
 
-bool Neighbours_Equal (std::vector<Vertex_Point>const& neighbours0, std::vector<Vertex_Point>const& neighbours1)
+bool Neighbours_Equal (std::vector<Vertex_Point>const& neighbours0, std::vector<Vertex_Point>const& neighbours1) // Is it returns equal neighbours within same molecule structure 
 {
     if ( neighbours0.size() != neighbours1.size() ) { std::cout<<"\nDifferent numbers of neighbours"; return false; }
     for ( int i = 0; i < neighbours0.size(); i++ )
@@ -513,9 +513,9 @@ bool Neighbours_Equal (std::vector<Vertex_Point>const& neighbours0, std::vector<
     return true;
 }
 
-bool Structures_Equal (Graph& s0, Vertex_it v0, Graph& s1, Vertex_it v1)
+bool Structures_Equal (Graph& s0, Vertex_it v0, Graph& s1, Vertex_it v1) // How it checks equalities of structure through this condition
 {
-    if ( norm( s0[ *v0 ].centre - s1[ *v1 ].centre ) > distance_error )
+    if ( norm( s0[ *v0 ].centre - s1[ *v1 ].centre ) > distance_error )   
     {
         std::cout<<"\nDifferent: "<<s0[ *v0 ].centre<<s1[ *v1 ].centre; // initial vertices
         return false;
@@ -557,7 +557,7 @@ int main()
         }
 
         // Add molecules by 26 shifts
-        std::vector<Point3d> shifts;
+        std::vector<Point3d> shifts;  // why this vector have their value in range of -1,0,1 for shift?
         for ( int i = -1; i <=1; i++ )
             for ( int j = -1; j <=1; j++ )
                 for ( int k = -1; k <=1; k++ )
@@ -582,7 +582,7 @@ int main()
         //
         std::cout<<" n=";
         Point3d c0, c1, c;
-        std::vector<Index_Value> gaps_HO;
+        std::vector<Index_Value> gaps_HO;   //What is the use of gaps_HO vector?
         for ( int i = 0; i < box.n_molecules; i++ )
         {
             gaps_HO.clear();
@@ -590,7 +590,7 @@ int main()
             for ( int j = 0; j < molecules.size(); j++ )
             {
                 if ( i == j ) continue;
-                c0 = structures[ ind_structure ][ vertices[i] ].centre;
+                c0 = structures[ ind_structure ][ vertices[i] ].centre;   
                 c1 = structures[ ind_structure ][ vertices[j] ].centre;
                 c = c1 - c0;
                 double d = norm( c ), gap_HO;
