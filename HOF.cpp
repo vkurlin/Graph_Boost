@@ -263,16 +263,16 @@ Point3d Cross_Product (Point3d v0, Point3d v1)
     return v;
 }
 
-bool Find_Rotation (Point3d v0, Point3d v1, Matrix& rotation)  //What is the purpose of calculation of rotation matrix w.r.t verties 
+bool Find_Rotation (Point3d vec0, Point3d vec1, Matrix& rotation)  // v0, v1 were vectors, now vec0, vec1
 {
-    double angle = Angle_Positive( v0, v1 );
+    double angle = Angle_Positive( vec0, vec1 );
     rotation = Eigen::MatrixXd::Identity(3,3);
     if ( angle == 0 ) return true; // identity rotation
     double c = cos( angle * M_PI / 180 );
     double s = sin( angle * M_PI / 180 );
     rotation *= c;
     if ( angle == M_PI ) return true; 
-    Point3d axis = Cross_Product( v0, v1 );
+    Point3d axis = Cross_Product( vec0, vec1 );
     axis *= 1.0 / norm( axis );
     rotation += s * Cross_Product( axis ) + (1-c) * Tensor_Product( axis ); //std::cout<<"\nr="<<rotation;
     return true;
